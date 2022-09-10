@@ -1,0 +1,16 @@
+pipeline {
+agent {
+node  { 
+label 'Dev'
+customWorkspace '/mnt/Dev'
+}
+}
+stages {
+   stage ('Copy-from-s3'){
+   steps {
+   sh 'aws s3 cp s3://ashwiniarpan1405/onlinebookstore-2.war .'
+   }
+   }
+}
+
+}
