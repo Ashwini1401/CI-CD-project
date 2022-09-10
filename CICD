@@ -21,6 +21,7 @@ stages {
 	steps {
 	sh "aws s3 mb s3://ashwiniarpan1405"
 	sh 'aws s3 cp /mnt/ashwini/onlinebookstore/target/onlinebookstore-2.war s3://ashwiniarpan1405'
+	sh './remove.sh'
 	}
 	}  
 	stage ('get-war')	{
@@ -32,7 +33,6 @@ stages {
 	}	
 stage ('QA-job'){
 	steps {
-	 
 	build 'copy-QA'
 	}
 	
@@ -41,4 +41,3 @@ stage ('QA-job'){
 }
 }
 }
-
