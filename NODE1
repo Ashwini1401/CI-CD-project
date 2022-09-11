@@ -8,7 +8,30 @@ customWorkspace '/mnt/Dev'
 stages {
    stage ('Copy-from-s3'){
    steps {
+   sh 'rm -rf /mnt/Dev/*'
    sh 'aws s3 cp s3://ashwiniarpan1405/onlinebookstore-2.war .'
+   }
+   }
+   stage ('Install-packages'){
+   steps {
+   sh 'yum install git docker -y'
+   sh 'systemctl start docker'
+   }
+   }
+   stage ('Git-clone'){
+   steps {
+   sh 'git clone https://github.com/Ashwini1401/CI-CD-project.git'
+   }
+   }
+   stage ('Build-tomcat-image'){
+   steps {
+   dir ('/mnt/Dev/CI-CD-project'){
+   sh 'git checkout Dockerfile'
+   sh 'cp /mnt/Dev/onlinebookstore-2.war .'
+   sh 'docker build -t tomcat:1.0 .'
+   sh 'docker run -itdp 8080:8080 tomcat:1.0'
+   sh 'docker run -itdp 100:8080 tomcat:1.0'
+   }
    }
    }
 }
