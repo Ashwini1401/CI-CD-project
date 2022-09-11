@@ -2,43 +2,42 @@ pipeline {
  agent {
  node {
  label 'built-in'
- customWorkspace "/mnt/ashwini"
+ customWorkspace '/mnt/arpan/'
        }
 	   }
 stages {
 	stage ('git-clone') {
 	steps {
-	
+	sh 'rm -rf /mnt/arpan/*'
 	sh 'git clone https://github.com/Ashwini1401/onlinebookstore.git'
 	}
 	}
 	stage ('war-build') {
 	steps {
-	sh 'cd /mnt/ashwini/onlinebookstore/ && mvn install'
+	sh 'cd /mnt/arpan/onlinebookstore/ && mvn install'
 	      }
            }	
     stage ('copy-to-s3') {
 	steps {
-	sh "aws s3 mb s3://ashwiniarpan1405"
-	sh 'aws s3 cp /mnt/ashwini/onlinebookstore/target/onlinebookstore-2.war s3://ashwiniarpan1405'
-	sh 'cd /mnt/ && ./remove.sh'
+	sh 'aws s3 cp /mnt/arpan/onlinebookstore/target/onlinebookstore-2.war s3://ashwiniarpan1405'
+	
 	}
 	}  
-	stage ('get-war')	{
+	
+	stage ('war-deploy'){
 	parallel {
 	stage ('dev-job'){
 	steps {
-	 	build 'copy-dev'
+	build 'copy-dev'
 	}
-	}	
-stage ('QA-job'){
-	steps {
-	 
+	}
+	stage ('QA-job'){
+	steps{  
 	build 'copy-QA'
 	}
-	
 	}
 	}
-}
-}
-}
+	}
+	 	
+	}	
+	}	
